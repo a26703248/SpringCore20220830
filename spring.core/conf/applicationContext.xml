@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:lang="http://www.springframework.org/schema/lang"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.3.xsd
+		http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-4.3.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.3.xsd">
+	<!-- 在 Spring 中定義一個 Hello 物件 (Hello 物件未來將統一由 Spring 平台管理) -->
+
+	<!-- session01 -->
+	<bean id="hello" class="spring.core.session01.beans.Hello"></bean>
+	<bean id="lotto1" scope="singleton"
+		class="spring.core.session01.beans.Lotto"></bean>
+	<bean id="lotto2" scope="singleton"
+		class="spring.core.session01.beans.Lotto"></bean>
+
+	<bean id="lucky" scope="prototype"
+		class="spring.core.session01.beans.Lucky"></bean>
+
+	<!-- session02 -->
+	<bean id="author1" scope="prototype"
+		class="spring.core.session02.beans.Author"></bean>
+	<bean id="author2" scope="prototype"
+		class="spring.core.session02.beans.Author">
+		<!-- 方法注入(必須要有 getter setter 方法) -->
+		<property name="name"><!-- name 會直接對應到 Author 的 setName() 方法 -->
+			<value>Howard</value>
+		</property>
+		<property name="sex">
+			<value>M</value>
+		</property>
+		<property name="age">
+			<value>24</value>
+		</property>
+	</bean>
+
+	<bean id="author3" class="spring.core.session02.beans.Author">
+		<!-- 建構子注入 -->
+		<!-- index = 建構子參數順序 -->
+		<constructor-arg index="0" value="Allan" />
+		<constructor-arg index="1" value="M" />
+		<constructor-arg index="2" value="25" />
+	</bean>
+
+	<!-- 簡易的方法注入(須加上命名空間:xmlns:p="http://www.springframework.org/schema/p") -->
+	<bean id="author4" class="spring.core.session02.beans.Author"
+		p:name="Hellen" p:sex="F" p:age="25" />
+
+	<!-- 簡易的建構子注入(須加上命名空間:xmlns:c="http://www.springframework.org/schema/c") -->
+	<bean id="author5" class="spring.core.session02.beans.Author"
+		c:name="Mary" c:age="30" c:sex="F" />
+
+	<!-- 無注入配置 -->
+	<bean id="book1" class="spring.core.session02.beans.Book" />
+
+	<!-- 在 book 中透過 ref 來配置 author -->
+	<bean id="book2" class="spring.core.session02.beans.Book">
+		<property name="name">
+			<value>Java</value>
+		</property>
+		<property name="price">
+			<value>300</value>
+		</property>
+		<property name="author" ref="author2" /> <!-- ref 建構子注入 -->
+	</bean>
+
+	<!-- 建構子注入 -->
+	<bean id="book3" class="spring.core.session02.beans.Book">
+		<constructor-arg index="0" value="Spring" />
+		<constructor-arg index="1" value="600" />
+		<constructor-arg index="2" ref="author2" />
+	</bean>
+
+	<!-- 在 book 中透過 p:author-ref 來配置 author -->
+	<bean id="book4" class="spring.core.session02.beans.Book"
+		p:name="Python" p:price="350" p:author-ref="author2" />
+
+	<!-- 在 book 中透過 c:author-ref 來配置 author -->
+	<bean id="book5" class="spring.core.session02.beans.Book"
+		c:name="C++" c:price="400" c:author-ref="author2" />
+
+	<!-- 在 book 中混用來配置(必須要有對應建構子) -->
+	<bean id="book6" class="spring.core.session02.beans.Book"
+		c:name="C++" c:price="400" p:author-ref="author2" />
+
+
+	<!-- session02 material -->
+	<!-- Paper, Color, Size -->
+	<bean id="color"
+		class="spring.core.session02.beans.material.Color" p:name="白色" />
+	<bean id="red" class="spring.core.session02.beans.material.Color"
+		p:name="紅色" />
+	<bean id="size" class="spring.core.session02.beans.material.Size"
+		p:name="A4" />
+	<bean id="b3" class="spring.core.session02.beans.material.Size"
+		p:name="B3" />
+
+	<!-- 自動配置 -->
+
+	<!-- byType 的限制:整個設定黨只有一個匹配型別，若超過一個可匹配的型別就會發生錯誤 -->
+	<!-- <bean id="paper" class="spring.core.session02.beans.material.Paper" 
+		p:id="101" autowire="byType"/> -->
+
+	<!-- byName (根據id, 且不需要對應建構子, 是透過 getter setter對應到現在設定檔id) -->
+	<bean id="paper2"
+		class="spring.core.session02.beans.material.Paper" p:id="102"
+		autowire="byName" />
+
+	<bean id="paper3"
+		class="spring.core.session02.beans.material.PaperRedB3" p:id="103"
+		autowire="byName" />
+
+	<!-- by construstor 建構子自動配置(根據建構子參數名稱對應到現在設定檔id) -->
+	<bean id="paper4"
+		class="spring.core.session02.beans.material.Paper"
+		autowire="constructor" />
+</beans>
