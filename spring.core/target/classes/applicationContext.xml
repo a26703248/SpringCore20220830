@@ -127,4 +127,114 @@
 	<bean id="paper4"
 		class="spring.core.session02.beans.material.Paper"
 		autowire="constructor" />
+
+	<!-- 引用外部資源 -->
+	<bean
+		class="org.springframework.beans.factory.config.PreferencesPlaceholderConfigurer">
+		<property name="location" value="data.properties"></property>
+	</bean>
+
+	<!-- 建立 Clazz 實例並使用外部資源(data.properties)來注入物件屬性資料 -->
+	<bean id="clazz1" p:id="1" p:name="${clazz.name}"
+		p:credit="${clazz.credit}" class="spring.core.session03.beans.Clazz" />
+
+	<bean id="clazz2" p:id="2" p:name="English"
+		p:credit="${clazz.credit}" class="spring.core.session03.beans.Clazz" />
+
+	<bean id="clazz3" p:id="3" p:name="Math"
+		p:credit="${clazz.credit}" class="spring.core.session03.beans.Clazz" />
+
+	<!-- 建立 Student 配置實例 1 -->
+	<bean id="student1" p:id="1" p:name="John"
+		class="spring.core.session03.beans.Student">
+		<!-- Set 集合配置(配置 clazzs 選課) -->
+		<property name="clazzs">
+			<set>
+				<ref bean="clazz1" />
+				<ref bean="clazz2" />
+				<ref bean="clazz3" />
+			</set>
+		</property>
+	</bean>
+
+	<!-- 建立 Student 配置實例 2 -->
+	<bean id="student2" p:id="2" p:name="Mary"
+		class="spring.core.session03.beans.Student">
+		<!-- Set 集合配置(配置 clazzs 選課) -->
+		<property name="clazzs">
+			<set>
+				<ref bean="clazz1" />
+				<ref bean="clazz2" />
+				<ref bean="clazz3" />
+			</set>
+		</property>
+	</bean>
+
+	<!-- 建立 Teacher 配置實例 1 -->
+	<bean id="teacher1" p:id="1" p:name="Bob"
+		class="spring.core.session03.beans.Teacher">
+		<!-- Set 集合配置(配置 student 學生) -->
+		<property name="students">
+			<set>
+				<ref bean="student1" />
+				<ref bean="student2" />
+			</set>
+		</property>
+
+		<!-- List 授課/專長項目列表配置 -->
+		<property name="subject">
+			<list>
+				<value>Math</value>
+				<value>English</value>
+			</list>
+		</property>
+
+		<!-- Map 薪資組合配置(每一格元素都是 entry -> key 與 value 的組合) -->
+		<property name="salary">
+			<map>
+				<entry key="base">
+					<value>50000</value> <!-- 本薪 -->
+				</entry>
+				<entry key="addition"> <!-- 加給 -->
+					<value>20000</value>
+				</entry>
+			</map>
+		</property>
+
+	</bean>
+
+
+	<!-- 簡化 util:set, util:list, util:map 配置 -->
+	<util:set id="students">
+		<ref bean="student1" />
+		<ref bean="student2" />
+	</util:set>
+
+	<util:list id="subjects">
+		<value>Math</value>
+		<value>English</value>
+		<value>Java</value>
+	</util:list>
+
+	<util:map id="salary">
+		<entry key="base" value="72000" />
+		<entry>
+			<key>
+				<value>addition</value>
+			</key>
+			<value>22000</value>
+		</entry>
+	</util:map>
+
+	<!-- 建立 Teacher 配置實例 2 -->
+	<bean id="teacher2" p:id="202" p:name="John"
+		p:subject-ref="subjects" p:students-ref="students"
+		p:salary-ref="salary" class="spring.core.session03.beans.Teacher" />
+
+
+	<!-- init-method, destory-method 配置 -->
+	<bean id="dbConn" init-method="open" destroy-method="close"
+		class="spring.core.session03.beans.DBConn" />
+
+
 </beans>
