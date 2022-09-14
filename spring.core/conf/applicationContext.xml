@@ -235,6 +235,12 @@
 	<!-- init-method, destory-method 配置 -->
 	<bean id="dbConn" init-method="open" destroy-method="close"
 		class="spring.core.session03.beans.DBConn" />
+	
+	<!-- 利用 BeanFactory 建立實體 -->
+	<!-- 不須再定義 scope 屬性(prototype、singleton) -->
+	<bean id="carFacetory" class="spring.core.session03.beans.CarFacetory"/>
 
-
+	<!-- Annotation(Component, Repository, Controller) 管理 -->
+	<!-- 掃描配置: 自動掃描有標註 @ 的類, 並建立物件實體 -->
+	<context:component-scan base-package="spring.core.session03.mvc"/>	
 </beans>
