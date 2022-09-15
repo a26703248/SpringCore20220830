@@ -7,6 +7,8 @@ public class Man implements Person{
 		
 		// 業務邏輯
 		System.out.println("去 Google 上班");
+//		測試錯誤
+		System.out.println(10/0);
 	}
 
 }
