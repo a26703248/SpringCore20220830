@@ -1,8 +1,8 @@
 -------------------------------------------------------------------------------
 Test set: spring.core.session01.TestHello
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.657 sec <<< FAILURE!
-test(spring.core.session01.TestHello)  Time elapsed: 0.59 sec  <<< ERROR!
+Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 2.515 sec <<< FAILURE!
+test(spring.core.session01.TestHello)  Time elapsed: 2.476 sec  <<< ERROR!
 org.springframework.beans.factory.NoSuchBeanDefinitionException: No bean named 'hello' available
 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.getBeanDefinition(DefaultListableBeanFactory.java:771)
 	at org.springframework.beans.factory.support.AbstractBeanFactory.getMergedLocalBeanDefinition(AbstractBeanFactory.java:1221)
