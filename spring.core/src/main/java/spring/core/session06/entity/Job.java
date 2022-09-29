@@ -47,5 +47,10 @@ public class Job {
 		this.emp = emp;
 	}
 
+	@Override
+	public String toString() {
+		return "Job [jid=" + jid + ", jname=" + jname + ", eid=" + eid + ", emp=" + emp + "]";
+	}
+
 
 }

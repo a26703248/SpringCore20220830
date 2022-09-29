@@ -8,7 +8,7 @@ public class Emp {
 	private Integer eid;
 	private String ename;
 	private Integer age;
-	private Date createDate;
+	private Date createTime;
 	
 	
 	private List<Job> jobs;
@@ -16,6 +16,14 @@ public class Emp {
 	public Emp() {
 		super();
 	}
+	
+
+	public Emp(String ename, Integer age) {
+		super();
+		this.ename = ename;
+		this.age = age;
+	}
+
 
 	public Integer getEid() {
 		return eid;
@@ -41,12 +49,12 @@ public class Emp {
 		this.age = age;
 	}
 
-	public Date getCreateDate() {
-		return createDate;
+	public Date getCreateTime() {
+		return createTime;
 	}
 
-	public void setCreateDate(Date createDate) {
-		this.createDate = createDate;
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
 	}
 
 	public List<Job> getJobs() {
@@ -57,6 +65,10 @@ public class Emp {
 		this.jobs = jobs;
 	}
 
-
+	@Override
+	public String toString() {
+		return "Emp [eid=" + eid + ", ename=" + ename + ", age=" + age + ", createTime=" + createTime + ", jobs=" + jobs
+				+ "]";
+	}
 
 }
