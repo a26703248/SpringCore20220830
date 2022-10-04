@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import javax.sql.DataSource;
+
 import org.simpleflatmapper.jdbc.spring.JdbcTemplateMapperFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -18,8 +20,15 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.EmptySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
+
+import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 import spring.core.session06.entity.Emp;
 import spring.core.session06.entity.Job;
@@ -31,6 +40,9 @@ public class EmpDao {
 
 	@Autowired
 	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+	
+	@Autowired
+	private ComboPooledDataSource dataSource = new ComboPooledDataSource();
 
 //	1. 筆查詢: 全部查詢
 	public List<Map<String, Object>> queryAll() {
@@ -249,5 +261,31 @@ public class EmpDao {
 		return jdbctemplate.update(sql, eid); // 刪除一樣是調用 update() 方法
 	}
 	
+	// 同時新增2筆資料(任何一筆失敗必須執行回滾)
+	public int[] addTwoTx(String ename1, Integer age1, String ename2, Integer age2) {
+		int[] rowCount = new int[2];
+		// 1. 建立 TransactionManager
+		DataSourceTransactionManager transationManager = new DataSourceTransactionManager(dataSource);
+		// 2. 建立 TransactionDefinition
+		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+		def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+		// 3. 交易狀態封裝(rollback 時使用)
+		TransactionStatus status = transationManager.getTransaction(def);
+		// 4. 交易處理
+		try {
+			String sql = "insert into emp(ename, age) values(?, ?)";
+			rowCount[0] = jdbctemplate.update(sql, ename1, age1); // 已經加入資料表(若無錯誤)
+			rowCount[1] = jdbctemplate.update(sql, ename2, age2); // 已經加入資料表(若無錯誤)
+		} catch (Exception e) {
+			transationManager.rollback(status); // 交易回滾
+			System.out.println("新增失敗");
+			return null;
+		}
+		
+		transationManager.commit(status); // 交易確認
+		System.out.println("新增成功");
+		return rowCount;
+	}
+		
 }
 
