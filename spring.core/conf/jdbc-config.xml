@@ -73,6 +73,6 @@
 		<property name="dataSource" ref="dataSource" />
 	</bean>
 
-	<!-- 啟用事務註解@驅動,會針對事務相關的註解@進行掃苗與分析 -->
-
+	<!-- 啟用事務註解@驅動, 會針對事務相關的註解@進行掃描與解析 -->
+	<tx:annotation-driven transaction-manager="transactionManager" />
 </beans>
